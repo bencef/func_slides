@@ -1,0 +1,607 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<title>Functional programming languages and patterns</title>
+<meta name="author" content="(Bence Fábián <bence.fabian@codecool.com>)"/>
+<style type="text/css">
+.underline { text-decoration: underline; }
+</style>
+<link rel="stylesheet" href="http://cdn.jsdelivr.net/reveal.js/3.0.0/css/reveal.css"/>
+
+<link rel="stylesheet" href="http://cdn.jsdelivr.net/reveal.js/3.0.0/css/theme/moon.css" id="theme"/>
+
+
+<!-- If the query includes 'print-pdf', include the PDF print sheet -->
+<script>
+    if( window.location.search.match( /print-pdf/gi ) ) {
+        var link = document.createElement( 'link' );
+        link.rel = 'stylesheet';
+        link.type = 'text/css';
+        link.href = 'http://cdn.jsdelivr.net/reveal.js/3.0.0/css/print/pdf.css';
+        document.getElementsByTagName( 'head' )[0].appendChild( link );
+    }
+</script>
+</head>
+<body>
+<div class="reveal">
+<div class="slides">
+<section id="sec-title-slide"><h2 class="author">Bence Fábián &lt;bence.fabian@codecool.com&gt;</h2><p class="date">Created: 2018-08-09 Thu 10:32</p>
+</section>
+
+<section>
+<section id="slide-sec-1">
+<h2 id="sec-1">The FunArg problem</h2>
+<p>
+Back when designing <b>ALGOL</b>
+it was a question whether functions should take other functions as arguments
+or return functions.
+</p>
+</section>
+<section id="slide-sec-1-1">
+<h3 id="sec-1-1">Downward FunArg</h3>
+<iframe style="background-color:white;" height="500px" width= "100%" srcdoc='<html><body><pre><code class="klipse" >
+<span style="color: #b4fa70;">def</span> <span style="color: #fce94f;">filter</span>(f, collection):
+    <span style="color: #fcaf3e;">result</span> = []
+    <span style="color: #b4fa70;">for</span> elt <span style="color: #b4fa70;">in</span> collection:
+        <span style="color: #b4fa70;">if</span> f(elt):
+            result.append(elt)
+    <span style="color: #b4fa70;">return</span> result
+
+<span style="color: #b4fa70;">def</span> <span style="color: #fce94f;">less_than_3</span>(elt):
+    <span style="color: #b4fa70;">return</span> elt &lt;3
+
+<span style="color: #b4fa70;">print</span>(<span style="color: #e090d7;">filter</span>(less_than_3, [34, 2, 7, 1]))
+
+</code></pre>
+<link rel= "stylesheet" type= "text/css" href="https://storage.googleapis.com/app.klipse.tech/css/codemirror.css">
+<style>
+.CodeMirror { font-size: 2em; }
+</style>
+<script>
+window.klipse_settings = { selector_eval_python_client: ".klipse" };
+</script>
+<script src= "https://storage.googleapis.com/app.klipse.tech/plugin_prod/js/klipse_plugin.min.js"></script></body></html>
+'>
+</iframe>
+</section>
+<section id="slide-sec-1-2">
+<h3 id="sec-1-2">Upwards funarg</h3>
+<iframe style="background-color:white;" height="500px" width= "100%" srcdoc='<html><body><pre><code class="klipse" >
+<span style="color: #b4fa70;">def</span> <span style="color: #fce94f;">adder</span>(term):
+    <span style="color: #b4fa70;">def</span> <span style="color: #fce94f;">tmp</span>(x):
+        <span style="color: #b4fa70;">return</span> x+term
+    <span style="color: #b4fa70;">return</span> tmp
+
+<span style="color: #fcaf3e;">add3</span>=adder(3)
+<span style="color: #b4fa70;">print</span>(add3(5))
+
+</code></pre>
+<link rel= "stylesheet" type= "text/css" href="https://storage.googleapis.com/app.klipse.tech/css/codemirror.css">
+<style>
+.CodeMirror { font-size: 2em; }
+</style>
+<script>
+window.klipse_settings = { selector_eval_python_client: ".klipse" };
+</script>
+<script src= "https://storage.googleapis.com/app.klipse.tech/plugin_prod/js/klipse_plugin.min.js"></script></body></html>
+'>
+</iframe>
+<p>
+Here <code>tmp</code> captures <code>term</code>.
+So a closure must be created.
+</p>
+</section>
+<section id="slide-sec-1-3">
+<h3 id="sec-1-3">Combining the two</h3>
+<iframe style="background-color:white;" height="500px" width= "100%" srcdoc='<html><body><pre><code class="klipse" >
+<span style="color: #b4fa70;">def</span> <span style="color: #fce94f;">compose</span>(f, g):
+    <span style="color: #b4fa70;">def</span> <span style="color: #fce94f;">tmp</span>(x):
+        <span style="color: #b4fa70;">return</span> f(g(x))
+    <span style="color: #b4fa70;">return</span> tmp
+
+<span style="color: #fcaf3e;">num_of_fields</span> = compose(<span style="color: #e090d7;">len</span>, <span style="color: #e090d7;">dir</span>)
+<span style="color: #b4fa70;">print</span>(num_of_fields(<span style="color: #e090d7;">__name__</span>))
+
+</code></pre>
+<link rel= "stylesheet" type= "text/css" href="https://storage.googleapis.com/app.klipse.tech/css/codemirror.css">
+<style>
+.CodeMirror { font-size: 2em; }
+</style>
+<script>
+window.klipse_settings = { selector_eval_python_client: ".klipse" };
+</script>
+<script src= "https://storage.googleapis.com/app.klipse.tech/plugin_prod/js/klipse_plugin.min.js"></script></body></html>
+'>
+</iframe>
+<p>
+Here <code>f</code>, <code>g</code> and <code>tmp</code> are all functions.
+</p>
+</section>
+</section>
+<section>
+<section id="slide-sec-2">
+<h2 id="sec-2">Lisp</h2>
+<p>
+Lisp was inspired by <b>Church</b>'s <b>Lambda Calculus</b>
+so functions were first class citizens from the get go.
+</p>
+</section>
+<section id="slide-sec-2-1">
+<h3 id="sec-2-1">Dynamic scoping</h3>
+<p>
+Most early implementations had dynamic scoping.
+(Think of <code>this</code> in Javascript)
+So passing around functions worked but variables weren't captured.
+</p>
+
+<p>
+Most early lisp is not written in a style we would consider functional today.
+</p>
+</section>
+<section id="slide-sec-2-2">
+<h3 id="sec-2-2">Scheme</h3>
+<p>
+Developed by <b>Guy Steele</b> and <b>Gerald Sussman</b>
+</p>
+
+<p>
+Two main contributions:
+</p>
+<ul>
+<li>lexical scoping by default</li>
+<li>cheap function calls</li>
+
+</ul>
+</section>
+<section id="slide-sec-2-3">
+<h3 id="sec-2-3">Scheme</h3>
+<p>
+Function calls so cheap they replace looping constructs.
+</p>
+<iframe style="background-color:white;" height="500px" width= "100%" srcdoc='<html><body><pre><code class="klipse" >
+(<span style="color: #b4fa70;">define</span> (<span style="color: #fce94f;">fact</span> n)
+  (<span style="color: #b4fa70;">define</span> (<span style="color: #fce94f;">fact-helper</span> n acc)
+    (<span style="color: #b4fa70;">if</span> (&lt;= n 1) acc
+        (fact-helper (- n 1) (* n acc))))
+  (fact-helper n 1))
+
+(fact 5)
+
+</code></pre>
+<link rel= "stylesheet" type= "text/css" href="https://storage.googleapis.com/app.klipse.tech/css/codemirror.css">
+<style>
+.CodeMirror { font-size: 2em; }
+</style>
+<script>
+window.klipse_settings = { selector_eval_scheme: ".klipse" };
+</script>
+<script src= "https://storage.googleapis.com/app.klipse.tech/plugin_prod/js/klipse_plugin.min.js"></script></body></html>
+'>
+</iframe>
+</section>
+</section>
+<section>
+<section id="slide-sec-3">
+<h2 id="sec-3">Lexical closures</h2>
+<p>
+Closure := function + environment
+</p>
+<iframe style="background-color:white;" height="500px" width= "100%" srcdoc='<html><body><pre><code class="klipse" >
+<span style="color: #b4fa70;">def</span> <span style="color: #fce94f;">adder</span>(x, env={}):
+    <span style="color: #b4fa70;">return</span> x + env[<span style="color: #e9b96e;">&#39;term&#39;</span>]
+
+<span style="color: #fcaf3e;">add3</span> = { <span style="color: #e9b96e;">&#39;fun&#39;</span>: adder,
+         <span style="color: #e9b96e;">&#39;env&#39;</span>: {<span style="color: #e9b96e;">&#39;term&#39;</span>: 3} }
+
+<span style="color: #b4fa70;">def</span> <span style="color: #fce94f;">call_closure</span>(closure, arg):
+    <span style="color: #b4fa70;">return</span> closure[<span style="color: #e9b96e;">&#39;fun&#39;</span>](arg, closure[<span style="color: #e9b96e;">&#39;env&#39;</span>])
+
+<span style="color: #b4fa70;">print</span>(call_closure(add3, 5))
+
+</code></pre>
+<link rel= "stylesheet" type= "text/css" href="https://storage.googleapis.com/app.klipse.tech/css/codemirror.css">
+<style>
+.CodeMirror { font-size: 2em; }
+</style>
+<script>
+window.klipse_settings = { selector_eval_python_client: ".klipse" };
+</script>
+<script src= "https://storage.googleapis.com/app.klipse.tech/plugin_prod/js/klipse_plugin.min.js"></script></body></html>
+'>
+</iframe>
+<p>
+All variables are passed as arguments here.
+So this would work in any language.
+</p>
+</section>
+<section id="slide-sec-3-1">
+<h3 id="sec-3-1">What do we get?</h3>
+<ul>
+<li>Having lexical closures (with recursion) we can build any Turing
+complete language.</li>
+<li>Since closures act like functions they are combinable like
+functions: modularity</li>
+
+</ul>
+</section>
+<section id="slide-sec-3-2">
+<h3 id="sec-3-2">Example I: Objects</h3>
+<iframe style="background-color:white;" height="500px" width= "100%" srcdoc='<html><body><pre><code class="klipse" >
+(<span style="color: #b4fa70;">define</span> (<span style="color: #fce94f;">new_balance</span> balance)
+  (<span style="color: #b4fa70;">lambda</span> (method amount)
+    (<span style="color: #b4fa70;">case</span> method
+      ((<span style="color: #e9b96e;">"deposit"</span>)  (set! balance (+ balance amount)))
+      ((<span style="color: #e9b96e;">"withdraw"</span>) (set! balance (- balance amount))))
+    balance))
+
+(<span style="color: #b4fa70;">define</span> <span style="color: #fce94f;">my_balance</span> (new_balance 50))
+(my_balance <span style="color: #e9b96e;">"withdraw"</span> 23)
+
+</code></pre>
+<link rel= "stylesheet" type= "text/css" href="https://storage.googleapis.com/app.klipse.tech/css/codemirror.css">
+<style>
+.CodeMirror { font-size: 2em; }
+</style>
+<script>
+window.klipse_settings = { selector_eval_scheme: ".klipse" };
+</script>
+<script src= "https://storage.googleapis.com/app.klipse.tech/plugin_prod/js/klipse_plugin.min.js"></script></body></html>
+'>
+</iframe>
+</section>
+<section id="slide-sec-3-3">
+<h3 id="sec-3-3">Example II: Streams</h3>
+<iframe style="background-color:white;" height="500px" width= "100%" srcdoc='<html><body><pre><code class="klipse" >
+(<span style="color: #b4fa70;">define</span> (<span style="color: #fce94f;">new_stream</span> state iterate)
+  (<span style="color: #b4fa70;">lambda</span> ()
+    (<span style="color: #b4fa70;">let</span> ((old-state state))
+      (set! state (iterate state))
+      old-state)))
+
+(<span style="color: #b4fa70;">define</span> <span style="color: #fce94f;">numbers</span>
+  (new_stream 1 (<span style="color: #b4fa70;">lambda</span> (x) (+ x 1))))
+(numbers)
+(numbers)
+(numbers)
+
+</code></pre>
+<link rel= "stylesheet" type= "text/css" href="https://storage.googleapis.com/app.klipse.tech/css/codemirror.css">
+<style>
+.CodeMirror { font-size: 2em; }
+</style>
+<script>
+window.klipse_settings = { selector_eval_scheme: ".klipse" };
+</script>
+<script src= "https://storage.googleapis.com/app.klipse.tech/plugin_prod/js/klipse_plugin.min.js"></script></body></html>
+'>
+</iframe>
+</section>
+<section id="slide-sec-3-4">
+<h3 id="sec-3-4">Example II: Streams (cont.)</h3>
+<iframe style="background-color:white;" height="500px" width= "100%" srcdoc='<html><body><pre><code class="klipse" >
+(<span style="color: #b4fa70;">define</span> (<span style="color: #fce94f;">new_stream</span> state iterate) (<span style="color: #b4fa70;">lambda</span> () (<span style="color: #b4fa70;">let</span> ((old-state state)) (set! state (iterate state)) old-state))) (<span style="color: #b4fa70;">define</span> <span style="color: #fce94f;">numbers</span> (new_stream 1 (<span style="color: #b4fa70;">lambda</span> (x) (+ x 1))))
+
+(<span style="color: #b4fa70;">define</span> (<span style="color: #fce94f;">filter</span> stream predicate)
+  (<span style="color: #b4fa70;">lambda</span> ()
+    (<span style="color: #b4fa70;">let</span> <span style="color: #fce94f;">get-next</span> ((next (stream)))
+      (<span style="color: #b4fa70;">if</span> (predicate next)
+          next
+          (get-next (stream))))))
+
+(<span style="color: #b4fa70;">define</span> <span style="color: #fce94f;">evens</span> (filter numbers even?))
+(<span style="color: #b4fa70;">let*</span> ((r1 (evens))
+       (r2 (evens))
+       (r3 (evens)))
+  (list r1 r2 r3))
+
+</code></pre>
+<link rel= "stylesheet" type= "text/css" href="https://storage.googleapis.com/app.klipse.tech/css/codemirror.css">
+<style>
+.CodeMirror { font-size: 2em; }
+</style>
+<script>
+window.klipse_settings = { selector_eval_scheme: ".klipse" };
+</script>
+<script src= "https://storage.googleapis.com/app.klipse.tech/plugin_prod/js/klipse_plugin.min.js"></script></body></html>
+'>
+</iframe>
+</section>
+</section>
+<section>
+<section id="slide-sec-4">
+<h2 id="sec-4">Type systems</h2>
+<p>
+Are they connected to functional programming?
+</p>
+
+<p>
+Well, some are, most aren't.
+</p>
+
+<p>
+Then which one is?
+</p>
+</section>
+<section id="slide-sec-4-1">
+<h3 id="sec-4-1">Hindley-Milner</h3>
+<ul>
+<li>Type system of <code>ML</code></li>
+<li>Base of type systems of <code>F#</code>, <code>OCaml</code>, <code>Scala</code>, <code>Haskell</code>, etc.</li>
+
+</ul>
+</section>
+<section id="slide-sec-4-2">
+<h3 id="sec-4-2">Why is it special?</h3>
+<ul>
+<li>It is not a designed type system, but a discovered one</li>
+<li>It is based on the <code>Typed lambda calculus</code></li>
+<li>Thus it is based on mathematical logic</li>
+<li>A program can be typed in (near-)linear time (no need for type annotations)</li>
+<li>Can be used for proofs</li>
+
+</ul>
+</section>
+<section id="slide-sec-4-3">
+<h3 id="sec-4-3">Type inference</h3>
+<div class="org-src-container">
+
+<pre  class="src src-ocaml"><span style="color: #f0e68c;">#</span> <span style="color: #b4fa70;">fun</span> <span style="color: #fcaf3e;">a b c</span> <span style="color: #f0e68c;">-&gt;</span> <span style="color: #b4fa70;">if</span> a <span style="color: #b4fa70;">then</span> b <span style="color: #f0e68c;">*</span> 2 <span style="color: #b4fa70;">else</span> c<span style="color: #ff4500;">;;</span>
+<span style="color: #f0e68c;">-</span> <span style="color: #f0e68c;">:</span> bool <span style="color: #f0e68c;">-&gt;</span> int <span style="color: #f0e68c;">-&gt;</span> int <span style="color: #f0e68c;">-&gt;</span> int <span style="color: #f0e68c;">=</span> <span style="color: #f0e68c;">&lt;</span><span style="color: #b4fa70;">fun</span><span style="color: #f0e68c;">&gt;</span>
+</pre>
+</div>
+<ul>
+<li><b>a</b> <span class="underline">must be</span> a <b>bool</b> because it is used as the condition in an
+<b>if</b> expression</li>
+<li><b>b</b> <span class="underline">must be</span> an integer cause it is multiplied by <code>2</code></li>
+<li><b>c</b> <span class="underline">must be</span> an integer as well because it has to have the same
+type as the result of <code>b * 2</code></li>
+
+</ul>
+
+<p>
+(in functional languages <code>if</code> is an expression, more similar to the
+ternary operator than <code>if</code> statements in mainstream languages)
+</p>
+</section>
+<section id="slide-sec-4-4">
+<h3 id="sec-4-4">Type parameters</h3>
+<div class="org-src-container">
+
+<pre  class="src src-ocaml"><span style="color: #f0e68c;">#</span> <span style="color: #b4fa70;">fun</span> <span style="color: #fcaf3e;">a b c</span> <span style="color: #f0e68c;">-&gt;</span> <span style="color: #b4fa70;">if</span> a <span style="color: #b4fa70;">then</span> b <span style="color: #b4fa70;">else</span> c<span style="color: #ff4500;">;;</span>
+<span style="color: #f0e68c;">-</span> <span style="color: #f0e68c;">:</span> bool <span style="color: #f0e68c;">-&gt;</span> 'a <span style="color: #f0e68c;">-&gt;</span> 'a <span style="color: #f0e68c;">-&gt;</span> 'a <span style="color: #f0e68c;">=</span> <span style="color: #f0e68c;">&lt;</span><span style="color: #b4fa70;">fun</span><span style="color: #f0e68c;">&gt;</span>
+</pre>
+</div>
+<ul>
+<li><b>a</b> <span class="underline">must be</span> a <b>bool</b> because it is used as the condition in an
+<b>if</b> expression</li>
+<li><b>b</b> and <b>c</b> can be <span class="underline">any</span> type here as long as they are the <span class="underline">same</span>
+  type</li>
+
+</ul>
+
+<p>
+'a here is a type parameter
+</p>
+</section>
+<section id="slide-sec-4-5">
+<h3 id="sec-4-5">Parametricity</h3>
+<p>
+Having type parameters can make some types so general, that there are
+only one or two values which can fulfil that type.
+</p>
+
+<div class="org-src-container">
+
+<pre  class="src src-ocaml">f<span style="color: #f0e68c;">:</span> 'a <span style="color: #f0e68c;">-&gt;</span> 'a
+</pre>
+</div>
+
+<p>
+Has only one possible implementation: the identity function.
+</p>
+<div class="org-src-container">
+
+<pre  class="src src-ocaml"><span style="color: #b4fa70;">fun</span> <span style="color: #fcaf3e;">x</span> <span style="color: #f0e68c;">-&gt;</span> x<span style="color: #ff4500;">;;</span>
+</pre>
+</div>
+<p>
+While
+</p>
+<div class="org-src-container">
+
+<pre  class="src src-ocaml">g<span style="color: #f0e68c;">:</span> <span style="color: #f0e68c;">(</span>'b <span style="color: #f0e68c;">-&gt;</span> 'c<span style="color: #f0e68c;">)</span> <span style="color: #f0e68c;">-&gt;</span> <span style="color: #f0e68c;">(</span>'a <span style="color: #f0e68c;">-&gt;</span> 'b<span style="color: #f0e68c;">)</span> <span style="color: #f0e68c;">-&gt;</span> <span style="color: #f0e68c;">(</span>'a <span style="color: #f0e68c;">-&gt;</span> 'c<span style="color: #f0e68c;">)</span>
+</pre>
+</div>
+<p>
+Has only one possible implementation as well: function composition.
+</p>
+<div class="org-src-container">
+
+<pre  class="src src-ocaml"><span style="color: #b4fa70;">fun</span> <span style="color: #fcaf3e;">f g</span> <span style="color: #f0e68c;">-&gt;</span> <span style="color: #b4fa70;">fun</span> <span style="color: #fcaf3e;">x</span> <span style="color: #f0e68c;">-&gt;</span> f <span style="color: #f0e68c;">(</span>g x<span style="color: #f0e68c;">)</span><span style="color: #ff4500;">;;</span>
+</pre>
+</div>
+</section>
+<section id="slide-sec-4-6">
+<h3 id="sec-4-6">Proof of correctness</h3>
+<p>
+The richer a type system is, the less things have to be checked at runtime.
+</p>
+
+<p>
+With a <b>Dependent type system</b> the type of vector concatenation is
+</p>
+<div class="org-src-container">
+
+<pre  class="src src-haskell">conc <span style="color: #fce94f;">:</span> <span style="color: #8cc4ff;">Vect</span> n a <span style="color: #fcaf3e;">-&gt;</span> <span style="color: #8cc4ff;">Vect</span> m a <span style="color: #fcaf3e;">-&gt;</span> <span style="color: #8cc4ff;">Vect</span> (n<span style="color: #fcaf3e;">+</span>m) a
+</pre>
+</div>
+<p>
+Where the first parameter is the length of the vector.
+</p>
+
+<p>
+The type of an empty Vector is <code>Vect 0 a</code>
+</p>
+
+<p>
+(this example is in <a href="https://www.idris-lang.org/">idris</a>)
+</p>
+</section>
+<section id="slide-sec-4-7">
+<h3 id="sec-4-7">Lying types</h3>
+<div class="org-src-container">
+
+<pre  class="src src-ocaml"><span style="color: #f0e68c;">&gt;</span> <span style="color: #f5deb3; font-weight: bold;">open </span><span style="color: #8cc4ff;">System</span><span style="color: #ff4500;">;;</span>
+<span style="color: #f0e68c;">&gt;</span> <span style="color: #8cc4ff;">Console.</span><span style="color: #eeeeec; background-color: #2e3436;">ReadLine</span><span style="color: #ff4500;">;;</span>
+<span style="color: #f5deb3; font-weight: bold;">val</span> <span style="color: #fce94f;">it</span> <span style="color: #f0e68c;">:</span> unit <span style="color: #f0e68c;">-&gt;</span> string <span style="color: #f0e68c;">=</span> <span style="color: #f0e68c;">&lt;</span><span style="color: #b4fa70;">fun</span><span style="color: #f0e68c;">:</span>clo<span style="color: #f0e68c;">@</span>8<span style="color: #f0e68c;">-</span>2<span style="color: #f0e68c;">&gt;</span>
+</pre>
+</div>
+<p>
+According to its type <code>ReadLine</code> in <b>F#</b> creates a <code>string</code> out of the
+type <code>unit</code> which has only one value: <code>()</code>.
+</p>
+</section>
+<section id="slide-sec-4-8">
+<h3 id="sec-4-8">Side effects</h3>
+<p>
+Programming language functions are not real functions.
+They have side-effects:
+</p>
+
+<ul>
+<li>doing IO</li>
+<li>changing state</li>
+<li>raising exceptions</li>
+<li>etc</li>
+
+</ul>
+</section>
+<section id="slide-sec-4-9">
+<h3 id="sec-4-9">Controlling side effects</h3>
+<p>
+<b>Haskell</b> has a type system where side effects are explicit.
+</p>
+
+<p>
+The function <code>putStr</code> has the type
+</p>
+<div class="org-src-container">
+
+<pre  class="src src-haskell"><span style="color: #fce94f;">putStrLn</span> <span style="color: #fcaf3e;">::</span> <span style="color: #8cc4ff;">String</span> <span style="color: #fcaf3e;">-&gt;</span> <span style="color: #8cc4ff;">IO</span> <span style="color: #8cc4ff;">()</span>
+</pre>
+</div>
+
+<p>
+It takes a <code>String</code> and returns an IO action (which wraps unit)
+</p>
+
+<p>
+Here IO happening is explicit.
+</p>
+</section>
+<section id="slide-sec-4-10">
+<h3 id="sec-4-10">Creating side effects</h3>
+<p>
+If the handling of side effects is formalized then new kind of side
+effects can be added to the language.
+</p>
+
+<p>
+For example exceptions, or probabilistic computations can be added to
+a language which doesn't have them originally.
+</p>
+</section>
+</section>
+<section>
+<section id="slide-sec-5">
+<h2 id="sec-5">Conclusion</h2>
+<p>
+It is worth to look into functional techniques when you need
+</p>
+<ul>
+<li><b>Modularity and extensibility:</b> to have composable parts which are
+easily understandable and scalable.</li>
+<li><b>Program correctness:</b> to have some proof that our program is doing
+what we have intended.</li>
+
+</ul>
+
+<p>
+You might not need a functional language.  Most of these techniques
+can be done in modern mainstream languages.
+</p>
+</section>
+<section id="slide-sec-5-1">
+<h3 id="sec-5-1">Q &amp; A</h3>
+<p>
+Do you have any questions?
+</p>
+</section>
+<section id="slide-sec-5-2">
+<h3 id="sec-5-2">Thank you for your attention</h3>
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="left" />
+
+<col  class="left" />
+</colgroup>
+<tbody>
+<tr>
+<td class="left">Twitter</td>
+<td class="left"><a href="https://twitter.com/onkel_benec">@onkel_benec</a></td>
+</tr>
+
+<tr>
+<td class="left">Github</td>
+<td class="left"><a href="https://github.com/bencef">bencef</a></td>
+</tr>
+</tbody>
+</table>
+
+<p>
+Do you want to see some haskell?
+</p>
+</section>
+</section>
+</div>
+</div>
+<script src="http://cdn.jsdelivr.net/reveal.js/3.0.0/lib/js/head.min.js"></script>
+<script src="http://cdn.jsdelivr.net/reveal.js/3.0.0/js/reveal.js"></script>
+
+<script>
+// Full list of configuration options available here:
+// https://github.com/hakimel/reveal.js#configuration
+Reveal.initialize({
+
+controls: true,
+progress: true,
+history: false,
+center: true,
+slideNumber: 'c',
+rollingLinks: false,
+keyboard: true,
+overview: true,
+
+theme: Reveal.getQueryHash().theme, // available themes are in /css/theme
+transition: Reveal.getQueryHash().transition || 'slide', // default/cube/page/concave/zoom/linear/fade/none
+transitionSpeed: 'default',
+multiplex: {
+    secret: '', // null if client
+    id: '', // id, obtained from socket.io server
+    url: '' // Location of socket.io server
+},
+
+// Optional libraries used to extend on reveal.js
+dependencies: [
+ { src: 'http://cdn.jsdelivr.net/reveal.js/3.0.0/lib/js/classList.js', condition: function() { return !document.body.classList; } },
+ { src: 'http://cdn.jsdelivr.net/reveal.js/3.0.0/plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+ { src: 'http://cdn.jsdelivr.net/reveal.js/3.0.0/plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+ { src: 'http://cdn.jsdelivr.net/reveal.js/3.0.0/plugin/zoom-js/zoom.js', async: true, condition: function() { return !!document.body.classList; } },
+ { src: 'http://cdn.jsdelivr.net/reveal.js/3.0.0/plugin/notes/notes.js', async: true, condition: function() { return !!document.body.classList; } }]
+});
+</script>
+</body>
+</html>

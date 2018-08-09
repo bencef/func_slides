@@ -1,0 +1,259 @@
+#+TITLE: Functional programming languages and patterns
+#+AUTHOR: Bence Fábián <bence.fabian@codecool.com>
+#+OPTIONS: num:nil toc:nil ^:nil
+#+BIND: org-reveal-klipsify-src t
+
+#+REVEAL_ROOT: http://cdn.jsdelivr.net/reveal.js/3.0.0/
+#+REVEAL_TRANS: slide
+
+* The FunArg problem
+Back when designing *ALGOL*
+it was a question whether functions should take other functions as arguments
+or return functions.
+** Downward FunArg
+#+BEGIN_SRC python
+  def filter(f, collection):
+      result = []
+      for elt in collection:
+          if f(elt):
+              result.append(elt)
+      return result
+
+  def less_than_3(elt):
+      return elt <3
+
+  print(filter(less_than_3, [34, 2, 7, 1]))
+#+END_SRC
+** Upwards funarg
+#+BEGIN_SRC python
+  def adder(term):
+      def tmp(x):
+          return x+term
+      return tmp
+
+  add3=adder(3)
+  print(add3(5))
+#+END_SRC
+Here =tmp= captures =term=.
+So a closure must be created.
+** Combining the two
+#+BEGIN_SRC python
+  def compose(f, g):
+      def tmp(x):
+          return f(g(x))
+      return tmp
+
+  num_of_fields = compose(len, dir)
+  print(num_of_fields(__name__))
+#+END_SRC
+Here =f=, =g= and =tmp= are all functions.
+* Lisp
+Lisp was inspired by *Church*'s *Lambda Calculus*
+so functions were first class citizens from the get go.
+** Dynamic scoping
+Most early implementations had dynamic scoping.
+(Think of =this= in Javascript)
+So passing around functions worked but variables weren't captured.
+
+Most early lisp is not written in a style we would consider functional today.
+** Scheme
+Developed by *Guy Steele* and *Gerald Sussman*
+
+Two main contributions:
+- lexical scoping by default
+- cheap function calls
+** Scheme
+Function calls so cheap they replace looping constructs.
+#+BEGIN_SRC scheme
+  (define (fact n)
+    (define (fact-helper n acc)
+      (if (<= n 1) acc
+          (fact-helper (- n 1) (* n acc))))
+    (fact-helper n 1))
+
+  (fact 5)
+#+END_SRC
+* Lexical closures
+Closure := function + environment
+#+BEGIN_SRC python
+  def adder(x, env={}):
+      return x + env['term']
+
+  add3 = { 'fun': adder,
+           'env': {'term': 3} }
+
+  def call_closure(closure, arg):
+      return closure['fun'](arg, closure['env'])
+
+  print(call_closure(add3, 5))
+#+END_SRC
+All variables are passed as arguments here.
+So this would work in any language.
+** What do we get?
+- Having lexical closures (with recursion) we can build any Turing
+  complete language.
+- Since closures act like functions they are combinable like
+  functions: modularity
+** Example I: Objects
+#+BEGIN_SRC scheme
+    (define (new_balance balance)
+      (lambda (method amount)
+        (case method
+          (("deposit")  (set! balance (+ balance amount)))
+          (("withdraw") (set! balance (- balance amount))))
+        balance))
+
+    (define my_balance (new_balance 50))
+    (my_balance "withdraw" 23)
+#+END_SRC
+** Example II: Streams
+#+BEGIN_SRC scheme
+  (define (new_stream state iterate)
+    (lambda ()
+      (let ((old-state state))
+        (set! state (iterate state))
+        old-state)))
+
+  (define numbers
+    (new_stream 1 (lambda (x) (+ x 1))))
+  (numbers)
+  (numbers)
+  (numbers)
+#+END_SRC
+** Example II: Streams (cont.)
+#+BEGIN_SRC scheme
+  (define (new_stream state iterate) (lambda () (let ((old-state state)) (set! state (iterate state)) old-state))) (define numbers (new_stream 1 (lambda (x) (+ x 1))))
+
+  (define (filter stream predicate)
+    (lambda ()
+      (let get-next ((next (stream)))
+        (if (predicate next)
+            next
+            (get-next (stream))))))
+
+  (define evens (filter numbers even?))
+  (let* ((r1 (evens))
+         (r2 (evens))
+         (r3 (evens)))
+    (list r1 r2 r3))
+#+END_SRC
+* Type systems
+Are they connected to functional programming?
+
+Well, some are, most aren't.
+
+Then which one is?
+** Hindley-Milner
+- Type system of =ML=
+- Base of type systems of =F#=, =OCaml=, =Scala=, =Haskell=, etc.
+** Why is it special?
+- It is not a designed type system, but a discovered one
+- It is based on the =Typed lambda calculus=
+- Thus it is based on mathematical logic
+- A program can be typed in (near-)linear time (no need for type annotations)
+- Can be used for proofs
+** Type inference
+#+BEGIN_SRC ocaml
+  # fun a b c -> if a then b * 2 else c;;
+  - : bool -> int -> int -> int = <fun>
+#+END_SRC
+- *a* _must be_ a *bool* because it is used as the condition in an
+  *if* expression
+- *b* _must be_ an integer cause it is multiplied by =2=
+- *c* _must be_ an integer as well because it has to have the same
+  type as the result of =b * 2=
+
+(in functional languages =if= is an expression, more similar to the
+ternary operator than =if= statements in mainstream languages)
+** Type parameters
+#+BEGIN_SRC ocaml
+  # fun a b c -> if a then b else c;;
+  - : bool -> 'a -> 'a -> 'a = <fun>
+#+END_SRC
+- *a* _must be_ a *bool* because it is used as the condition in an
+  *if* expression
+- *b* and *c* can be _any_ type here as long as they are the _same_
+  type
+
+'a here is a type parameter
+** Parametricity
+Having type parameters can make some types so general, that there are
+only one or two values which can fulfil that type.
+
+#+BEGIN_SRC ocaml
+  f: 'a -> 'a
+#+END_SRC
+
+Has only one possible implementation: the identity function.
+#+BEGIN_SRC ocaml
+  fun x -> x;;
+#+END_SRC
+While
+#+BEGIN_SRC ocaml
+  g: ('b -> 'c) -> ('a -> 'b) -> ('a -> 'c)
+#+END_SRC
+Has only one possible implementation as well: function composition.
+#+BEGIN_SRC ocaml
+  fun f g -> fun x -> f (g x);;
+#+END_SRC
+** Proof of correctness
+The richer a type system is, the less things have to be checked at runtime.
+
+With a *Dependent type system* the type of vector concatenation is
+#+BEGIN_SRC haskell
+  conc : Vect n a -> Vect m a -> Vect (n+m) a
+#+END_SRC
+Where the first parameter is the length of the vector.
+
+The type of an empty Vector is =Vect 0 a=
+
+(this example is in [[https://www.idris-lang.org/][idris]])
+** Lying types
+#+BEGIN_SRC ocaml
+  > open System;;
+  > Console.ReadLine;;
+  val it : unit -> string = <fun:clo@8-2>
+#+END_SRC
+According to its type =ReadLine= in *F#* creates a =string= out of the
+type =unit= which has only one value: =()=.
+** Side effects
+Programming language functions are not real functions.
+They have side-effects:
+
+- doing IO
+- changing state
+- raising exceptions
+- etc
+** Controlling side effects
+*Haskell* has a type system where side effects are explicit.
+
+The function =putStr= has the type
+#+BEGIN_SRC haskell
+  putStrLn :: String -> IO ()
+#+END_SRC
+
+It takes a =String= and returns an IO action (which wraps unit)
+
+Here IO happening is explicit.
+** Creating side effects
+If the handling of side effects is formalized then new kind of side
+effects can be added to the language.
+
+For example exceptions, or probabilistic computations can be added to
+a language which doesn't have them originally.
+* Conclusion
+It is worth to look into functional techniques when you need
+- *Modularity and extensibility:* to have composable parts which are
+  easily understandable and scalable.
+- *Program correctness:* to have some proof that our program is doing
+  what we have intended.
+
+You might not need a functional language.  Most of these techniques
+can be done in modern mainstream languages.
+** Q & A
+Do you have any questions?
+** Thank you for your attention
+| Twitter | [[https://twitter.com/onkel_benec][@onkel_benec]] |
+| Github  | [[https://github.com/bencef][bencef]]       |
+
+Do you want to see some haskell?
