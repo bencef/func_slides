@@ -4,6 +4,7 @@
 #+BIND: org-reveal-klipsify-src t
 
 #+REVEAL_ROOT: http://cdn.jsdelivr.net/reveal.js/3.0.0/
+#+REVEAL_THEME: white
 #+REVEAL_TRANS: slide
 
 * The FunArg problem

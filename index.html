@@ -9,7 +9,7 @@
 </style>
 <link rel="stylesheet" href="http://cdn.jsdelivr.net/reveal.js/3.0.0/css/reveal.css"/>
 
-<link rel="stylesheet" href="http://cdn.jsdelivr.net/reveal.js/3.0.0/css/theme/moon.css" id="theme"/>
+<link rel="stylesheet" href="http://cdn.jsdelivr.net/reveal.js/3.0.0/css/theme/white.css" id="theme"/>
 
 
 <!-- If the query includes 'print-pdf', include the PDF print sheet -->
@@ -26,7 +26,7 @@
 <body>
 <div class="reveal">
 <div class="slides">
-<section id="sec-title-slide"><h2 class="author">Bence Fábián &lt;bence.fabian@codecool.com&gt;</h2><p class="date">Created: 2018-08-09 Thu 10:32</p>
+<section id="sec-title-slide"><h2 class="author">Bence Fábián &lt;bence.fabian@codecool.com&gt;</h2><p class="date">Created: 2018-08-28 Tue 11:23</p>
 </section>
 
 <section>
@@ -41,17 +41,17 @@ or return functions.
 <section id="slide-sec-1-1">
 <h3 id="sec-1-1">Downward FunArg</h3>
 <iframe style="background-color:white;" height="500px" width= "100%" srcdoc='<html><body><pre><code class="klipse" >
-<span style="color: #b4fa70;">def</span> <span style="color: #fce94f;">filter</span>(f, collection):
-    <span style="color: #fcaf3e;">result</span> = []
-    <span style="color: #b4fa70;">for</span> elt <span style="color: #b4fa70;">in</span> collection:
-        <span style="color: #b4fa70;">if</span> f(elt):
+<span style="color: #346604;">def</span> <span style="color: #a40000;">filter</span>(f, collection):
+    <span style="color: #b35000;">result</span> = []
+    <span style="color: #346604;">for</span> elt <span style="color: #346604;">in</span> collection:
+        <span style="color: #346604;">if</span> f(elt):
             result.append(elt)
-    <span style="color: #b4fa70;">return</span> result
+    <span style="color: #346604;">return</span> result
 
-<span style="color: #b4fa70;">def</span> <span style="color: #fce94f;">less_than_3</span>(elt):
-    <span style="color: #b4fa70;">return</span> elt &lt;3
+<span style="color: #346604;">def</span> <span style="color: #a40000;">less_than_3</span>(elt):
+    <span style="color: #346604;">return</span> elt &lt;3
 
-<span style="color: #b4fa70;">print</span>(<span style="color: #e090d7;">filter</span>(less_than_3, [34, 2, 7, 1]))
+<span style="color: #346604;">print</span>(<span style="color: #75507b;">filter</span>(less_than_3, [34, 2, 7, 1]))
 
 </code></pre>
 <link rel= "stylesheet" type= "text/css" href="https://storage.googleapis.com/app.klipse.tech/css/codemirror.css">
@@ -68,13 +68,13 @@ window.klipse_settings = { selector_eval_python_client: ".klipse" };
 <section id="slide-sec-1-2">
 <h3 id="sec-1-2">Upwards funarg</h3>
 <iframe style="background-color:white;" height="500px" width= "100%" srcdoc='<html><body><pre><code class="klipse" >
-<span style="color: #b4fa70;">def</span> <span style="color: #fce94f;">adder</span>(term):
-    <span style="color: #b4fa70;">def</span> <span style="color: #fce94f;">tmp</span>(x):
-        <span style="color: #b4fa70;">return</span> x+term
-    <span style="color: #b4fa70;">return</span> tmp
+<span style="color: #346604;">def</span> <span style="color: #a40000;">adder</span>(term):
+    <span style="color: #346604;">def</span> <span style="color: #a40000;">tmp</span>(x):
+        <span style="color: #346604;">return</span> x+term
+    <span style="color: #346604;">return</span> tmp
 
-<span style="color: #fcaf3e;">add3</span>=adder(3)
-<span style="color: #b4fa70;">print</span>(add3(5))
+<span style="color: #b35000;">add3</span>=adder(3)
+<span style="color: #346604;">print</span>(add3(5))
 
 </code></pre>
 <link rel= "stylesheet" type= "text/css" href="https://storage.googleapis.com/app.klipse.tech/css/codemirror.css">
@@ -95,13 +95,13 @@ So a closure must be created.
 <section id="slide-sec-1-3">
 <h3 id="sec-1-3">Combining the two</h3>
 <iframe style="background-color:white;" height="500px" width= "100%" srcdoc='<html><body><pre><code class="klipse" >
-<span style="color: #b4fa70;">def</span> <span style="color: #fce94f;">compose</span>(f, g):
-    <span style="color: #b4fa70;">def</span> <span style="color: #fce94f;">tmp</span>(x):
-        <span style="color: #b4fa70;">return</span> f(g(x))
-    <span style="color: #b4fa70;">return</span> tmp
+<span style="color: #346604;">def</span> <span style="color: #a40000;">compose</span>(f, g):
+    <span style="color: #346604;">def</span> <span style="color: #a40000;">tmp</span>(x):
+        <span style="color: #346604;">return</span> f(g(x))
+    <span style="color: #346604;">return</span> tmp
 
-<span style="color: #fcaf3e;">num_of_fields</span> = compose(<span style="color: #e090d7;">len</span>, <span style="color: #e090d7;">dir</span>)
-<span style="color: #b4fa70;">print</span>(num_of_fields(<span style="color: #e090d7;">__name__</span>))
+<span style="color: #b35000;">num_of_fields</span> = compose(<span style="color: #75507b;">len</span>, <span style="color: #75507b;">dir</span>)
+<span style="color: #346604;">print</span>(num_of_fields(<span style="color: #75507b;">__name__</span>))
 
 </code></pre>
 <link rel= "stylesheet" type= "text/css" href="https://storage.googleapis.com/app.klipse.tech/css/codemirror.css">
@@ -160,9 +160,9 @@ Two main contributions:
 Function calls so cheap they replace looping constructs.
 </p>
 <iframe style="background-color:white;" height="500px" width= "100%" srcdoc='<html><body><pre><code class="klipse" >
-(<span style="color: #b4fa70;">define</span> (<span style="color: #fce94f;">fact</span> n)
-  (<span style="color: #b4fa70;">define</span> (<span style="color: #fce94f;">fact-helper</span> n acc)
-    (<span style="color: #b4fa70;">if</span> (&lt;= n 1) acc
+(<span style="color: #346604;">define</span> (<span style="color: #a40000;">fact</span> n)
+  (<span style="color: #346604;">define</span> (<span style="color: #a40000;">fact-helper</span> n acc)
+    (<span style="color: #346604;">if</span> (&lt;= n 1) acc
         (fact-helper (- n 1) (* n acc))))
   (fact-helper n 1))
 
@@ -188,16 +188,16 @@ window.klipse_settings = { selector_eval_scheme: ".klipse" };
 Closure := function + environment
 </p>
 <iframe style="background-color:white;" height="500px" width= "100%" srcdoc='<html><body><pre><code class="klipse" >
-<span style="color: #b4fa70;">def</span> <span style="color: #fce94f;">adder</span>(x, env={}):
-    <span style="color: #b4fa70;">return</span> x + env[<span style="color: #e9b96e;">&#39;term&#39;</span>]
+<span style="color: #346604;">def</span> <span style="color: #a40000;">adder</span>(x, env={}):
+    <span style="color: #346604;">return</span> x + env[<span style="color: #5c3566;">&#39;term&#39;</span>]
 
-<span style="color: #fcaf3e;">add3</span> = { <span style="color: #e9b96e;">&#39;fun&#39;</span>: adder,
-         <span style="color: #e9b96e;">&#39;env&#39;</span>: {<span style="color: #e9b96e;">&#39;term&#39;</span>: 3} }
+<span style="color: #b35000;">add3</span> = { <span style="color: #5c3566;">&#39;fun&#39;</span>: adder,
+         <span style="color: #5c3566;">&#39;env&#39;</span>: {<span style="color: #5c3566;">&#39;term&#39;</span>: 3} }
 
-<span style="color: #b4fa70;">def</span> <span style="color: #fce94f;">call_closure</span>(closure, arg):
-    <span style="color: #b4fa70;">return</span> closure[<span style="color: #e9b96e;">&#39;fun&#39;</span>](arg, closure[<span style="color: #e9b96e;">&#39;env&#39;</span>])
+<span style="color: #346604;">def</span> <span style="color: #a40000;">call_closure</span>(closure, arg):
+    <span style="color: #346604;">return</span> closure[<span style="color: #5c3566;">&#39;fun&#39;</span>](arg, closure[<span style="color: #5c3566;">&#39;env&#39;</span>])
 
-<span style="color: #b4fa70;">print</span>(call_closure(add3, 5))
+<span style="color: #346604;">print</span>(call_closure(add3, 5))
 
 </code></pre>
 <link rel= "stylesheet" type= "text/css" href="https://storage.googleapis.com/app.klipse.tech/css/codemirror.css">
@@ -228,15 +228,15 @@ functions: modularity</li>
 <section id="slide-sec-3-2">
 <h3 id="sec-3-2">Example I: Objects</h3>
 <iframe style="background-color:white;" height="500px" width= "100%" srcdoc='<html><body><pre><code class="klipse" >
-(<span style="color: #b4fa70;">define</span> (<span style="color: #fce94f;">new_balance</span> balance)
-  (<span style="color: #b4fa70;">lambda</span> (method amount)
-    (<span style="color: #b4fa70;">case</span> method
-      ((<span style="color: #e9b96e;">"deposit"</span>)  (set! balance (+ balance amount)))
-      ((<span style="color: #e9b96e;">"withdraw"</span>) (set! balance (- balance amount))))
+(<span style="color: #346604;">define</span> (<span style="color: #a40000;">new_balance</span> balance)
+  (<span style="color: #346604;">lambda</span> (method amount)
+    (<span style="color: #346604;">case</span> method
+      ((<span style="color: #5c3566;">"deposit"</span>)  (set! balance (+ balance amount)))
+      ((<span style="color: #5c3566;">"withdraw"</span>) (set! balance (- balance amount))))
     balance))
 
-(<span style="color: #b4fa70;">define</span> <span style="color: #fce94f;">my_balance</span> (new_balance 50))
-(my_balance <span style="color: #e9b96e;">"withdraw"</span> 23)
+(<span style="color: #346604;">define</span> <span style="color: #a40000;">my_balance</span> (new_balance 50))
+(my_balance <span style="color: #5c3566;">"withdraw"</span> 23)
 
 </code></pre>
 <link rel= "stylesheet" type= "text/css" href="https://storage.googleapis.com/app.klipse.tech/css/codemirror.css">
@@ -253,14 +253,14 @@ window.klipse_settings = { selector_eval_scheme: ".klipse" };
 <section id="slide-sec-3-3">
 <h3 id="sec-3-3">Example II: Streams</h3>
 <iframe style="background-color:white;" height="500px" width= "100%" srcdoc='<html><body><pre><code class="klipse" >
-(<span style="color: #b4fa70;">define</span> (<span style="color: #fce94f;">new_stream</span> state iterate)
-  (<span style="color: #b4fa70;">lambda</span> ()
-    (<span style="color: #b4fa70;">let</span> ((old-state state))
+(<span style="color: #346604;">define</span> (<span style="color: #a40000;">new_stream</span> state iterate)
+  (<span style="color: #346604;">lambda</span> ()
+    (<span style="color: #346604;">let</span> ((old-state state))
       (set! state (iterate state))
       old-state)))
 
-(<span style="color: #b4fa70;">define</span> <span style="color: #fce94f;">numbers</span>
-  (new_stream 1 (<span style="color: #b4fa70;">lambda</span> (x) (+ x 1))))
+(<span style="color: #346604;">define</span> <span style="color: #a40000;">numbers</span>
+  (new_stream 1 (<span style="color: #346604;">lambda</span> (x) (+ x 1))))
 (numbers)
 (numbers)
 (numbers)
@@ -280,17 +280,17 @@ window.klipse_settings = { selector_eval_scheme: ".klipse" };
 <section id="slide-sec-3-4">
 <h3 id="sec-3-4">Example II: Streams (cont.)</h3>
 <iframe style="background-color:white;" height="500px" width= "100%" srcdoc='<html><body><pre><code class="klipse" >
-(<span style="color: #b4fa70;">define</span> (<span style="color: #fce94f;">new_stream</span> state iterate) (<span style="color: #b4fa70;">lambda</span> () (<span style="color: #b4fa70;">let</span> ((old-state state)) (set! state (iterate state)) old-state))) (<span style="color: #b4fa70;">define</span> <span style="color: #fce94f;">numbers</span> (new_stream 1 (<span style="color: #b4fa70;">lambda</span> (x) (+ x 1))))
+(<span style="color: #346604;">define</span> (<span style="color: #a40000;">new_stream</span> state iterate) (<span style="color: #346604;">lambda</span> () (<span style="color: #346604;">let</span> ((old-state state)) (set! state (iterate state)) old-state))) (<span style="color: #346604;">define</span> <span style="color: #a40000;">numbers</span> (new_stream 1 (<span style="color: #346604;">lambda</span> (x) (+ x 1))))
 
-(<span style="color: #b4fa70;">define</span> (<span style="color: #fce94f;">filter</span> stream predicate)
-  (<span style="color: #b4fa70;">lambda</span> ()
-    (<span style="color: #b4fa70;">let</span> <span style="color: #fce94f;">get-next</span> ((next (stream)))
-      (<span style="color: #b4fa70;">if</span> (predicate next)
+(<span style="color: #346604;">define</span> (<span style="color: #a40000;">filter</span> stream predicate)
+  (<span style="color: #346604;">lambda</span> ()
+    (<span style="color: #346604;">let</span> <span style="color: #a40000;">get-next</span> ((next (stream)))
+      (<span style="color: #346604;">if</span> (predicate next)
           next
           (get-next (stream))))))
 
-(<span style="color: #b4fa70;">define</span> <span style="color: #fce94f;">evens</span> (filter numbers even?))
-(<span style="color: #b4fa70;">let*</span> ((r1 (evens))
+(<span style="color: #346604;">define</span> <span style="color: #a40000;">evens</span> (filter numbers even?))
+(<span style="color: #346604;">let*</span> ((r1 (evens))
        (r2 (evens))
        (r3 (evens)))
   (list r1 r2 r3))
@@ -346,8 +346,8 @@ Then which one is?
 <h3 id="sec-4-3">Type inference</h3>
 <div class="org-src-container">
 
-<pre  class="src src-ocaml"><span style="color: #f0e68c;">#</span> <span style="color: #b4fa70;">fun</span> <span style="color: #fcaf3e;">a b c</span> <span style="color: #f0e68c;">-&gt;</span> <span style="color: #b4fa70;">if</span> a <span style="color: #b4fa70;">then</span> b <span style="color: #f0e68c;">*</span> 2 <span style="color: #b4fa70;">else</span> c<span style="color: #ff4500;">;;</span>
-<span style="color: #f0e68c;">-</span> <span style="color: #f0e68c;">:</span> bool <span style="color: #f0e68c;">-&gt;</span> int <span style="color: #f0e68c;">-&gt;</span> int <span style="color: #f0e68c;">-&gt;</span> int <span style="color: #f0e68c;">=</span> <span style="color: #f0e68c;">&lt;</span><span style="color: #b4fa70;">fun</span><span style="color: #f0e68c;">&gt;</span>
+<pre  class="src src-ocaml"><span style="color: #a52a2a;">#</span> <span style="color: #346604;">fun</span> <span style="color: #b35000;">a b c</span> <span style="color: #a52a2a;">-&gt;</span> <span style="color: #346604;">if</span> a <span style="color: #346604;">then</span> b <span style="color: #a52a2a;">*</span> 2 <span style="color: #346604;">else</span> c<span style="color: #ff4500;">;;</span>
+<span style="color: #a52a2a;">-</span> <span style="color: #a52a2a;">:</span> bool <span style="color: #a52a2a;">-&gt;</span> int <span style="color: #a52a2a;">-&gt;</span> int <span style="color: #a52a2a;">-&gt;</span> int <span style="color: #a52a2a;">=</span> <span style="color: #a52a2a;">&lt;</span><span style="color: #346604;">fun</span><span style="color: #a52a2a;">&gt;</span>
 </pre>
 </div>
 <ul>
@@ -368,8 +368,8 @@ ternary operator than <code>if</code> statements in mainstream languages)
 <h3 id="sec-4-4">Type parameters</h3>
 <div class="org-src-container">
 
-<pre  class="src src-ocaml"><span style="color: #f0e68c;">#</span> <span style="color: #b4fa70;">fun</span> <span style="color: #fcaf3e;">a b c</span> <span style="color: #f0e68c;">-&gt;</span> <span style="color: #b4fa70;">if</span> a <span style="color: #b4fa70;">then</span> b <span style="color: #b4fa70;">else</span> c<span style="color: #ff4500;">;;</span>
-<span style="color: #f0e68c;">-</span> <span style="color: #f0e68c;">:</span> bool <span style="color: #f0e68c;">-&gt;</span> 'a <span style="color: #f0e68c;">-&gt;</span> 'a <span style="color: #f0e68c;">-&gt;</span> 'a <span style="color: #f0e68c;">=</span> <span style="color: #f0e68c;">&lt;</span><span style="color: #b4fa70;">fun</span><span style="color: #f0e68c;">&gt;</span>
+<pre  class="src src-ocaml"><span style="color: #a52a2a;">#</span> <span style="color: #346604;">fun</span> <span style="color: #b35000;">a b c</span> <span style="color: #a52a2a;">-&gt;</span> <span style="color: #346604;">if</span> a <span style="color: #346604;">then</span> b <span style="color: #346604;">else</span> c<span style="color: #ff4500;">;;</span>
+<span style="color: #a52a2a;">-</span> <span style="color: #a52a2a;">:</span> bool <span style="color: #a52a2a;">-&gt;</span> 'a <span style="color: #a52a2a;">-&gt;</span> 'a <span style="color: #a52a2a;">-&gt;</span> 'a <span style="color: #a52a2a;">=</span> <span style="color: #a52a2a;">&lt;</span><span style="color: #346604;">fun</span><span style="color: #a52a2a;">&gt;</span>
 </pre>
 </div>
 <ul>
@@ -393,7 +393,7 @@ only one or two values which can fulfil that type.
 
 <div class="org-src-container">
 
-<pre  class="src src-ocaml">f<span style="color: #f0e68c;">:</span> 'a <span style="color: #f0e68c;">-&gt;</span> 'a
+<pre  class="src src-ocaml">f<span style="color: #a52a2a;">:</span> 'a <span style="color: #a52a2a;">-&gt;</span> 'a
 </pre>
 </div>
 
@@ -402,7 +402,7 @@ Has only one possible implementation: the identity function.
 </p>
 <div class="org-src-container">
 
-<pre  class="src src-ocaml"><span style="color: #b4fa70;">fun</span> <span style="color: #fcaf3e;">x</span> <span style="color: #f0e68c;">-&gt;</span> x<span style="color: #ff4500;">;;</span>
+<pre  class="src src-ocaml"><span style="color: #346604;">fun</span> <span style="color: #b35000;">x</span> <span style="color: #a52a2a;">-&gt;</span> x<span style="color: #ff4500;">;;</span>
 </pre>
 </div>
 <p>
@@ -410,7 +410,7 @@ While
 </p>
 <div class="org-src-container">
 
-<pre  class="src src-ocaml">g<span style="color: #f0e68c;">:</span> <span style="color: #f0e68c;">(</span>'b <span style="color: #f0e68c;">-&gt;</span> 'c<span style="color: #f0e68c;">)</span> <span style="color: #f0e68c;">-&gt;</span> <span style="color: #f0e68c;">(</span>'a <span style="color: #f0e68c;">-&gt;</span> 'b<span style="color: #f0e68c;">)</span> <span style="color: #f0e68c;">-&gt;</span> <span style="color: #f0e68c;">(</span>'a <span style="color: #f0e68c;">-&gt;</span> 'c<span style="color: #f0e68c;">)</span>
+<pre  class="src src-ocaml">g<span style="color: #a52a2a;">:</span> <span style="color: #a52a2a;">(</span>'b <span style="color: #a52a2a;">-&gt;</span> 'c<span style="color: #a52a2a;">)</span> <span style="color: #a52a2a;">-&gt;</span> <span style="color: #a52a2a;">(</span>'a <span style="color: #a52a2a;">-&gt;</span> 'b<span style="color: #a52a2a;">)</span> <span style="color: #a52a2a;">-&gt;</span> <span style="color: #a52a2a;">(</span>'a <span style="color: #a52a2a;">-&gt;</span> 'c<span style="color: #a52a2a;">)</span>
 </pre>
 </div>
 <p>
@@ -418,7 +418,7 @@ Has only one possible implementation as well: function composition.
 </p>
 <div class="org-src-container">
 
-<pre  class="src src-ocaml"><span style="color: #b4fa70;">fun</span> <span style="color: #fcaf3e;">f g</span> <span style="color: #f0e68c;">-&gt;</span> <span style="color: #b4fa70;">fun</span> <span style="color: #fcaf3e;">x</span> <span style="color: #f0e68c;">-&gt;</span> f <span style="color: #f0e68c;">(</span>g x<span style="color: #f0e68c;">)</span><span style="color: #ff4500;">;;</span>
+<pre  class="src src-ocaml"><span style="color: #346604;">fun</span> <span style="color: #b35000;">f g</span> <span style="color: #a52a2a;">-&gt;</span> <span style="color: #346604;">fun</span> <span style="color: #b35000;">x</span> <span style="color: #a52a2a;">-&gt;</span> f <span style="color: #a52a2a;">(</span>g x<span style="color: #a52a2a;">)</span><span style="color: #ff4500;">;;</span>
 </pre>
 </div>
 </section>
@@ -433,7 +433,7 @@ With a <b>Dependent type system</b> the type of vector concatenation is
 </p>
 <div class="org-src-container">
 
-<pre  class="src src-haskell">conc <span style="color: #fce94f;">:</span> <span style="color: #8cc4ff;">Vect</span> n a <span style="color: #fcaf3e;">-&gt;</span> <span style="color: #8cc4ff;">Vect</span> m a <span style="color: #fcaf3e;">-&gt;</span> <span style="color: #8cc4ff;">Vect</span> (n<span style="color: #fcaf3e;">+</span>m) a
+<pre  class="src src-haskell">conc <span style="color: #a40000;">:</span> <span style="color: #204a87;">Vect</span> n a <span style="color: #b35000;">-&gt;</span> <span style="color: #204a87;">Vect</span> m a <span style="color: #b35000;">-&gt;</span> <span style="color: #204a87;">Vect</span> (n<span style="color: #b35000;">+</span>m) a
 </pre>
 </div>
 <p>
@@ -452,9 +452,9 @@ The type of an empty Vector is <code>Vect 0 a</code>
 <h3 id="sec-4-7">Lying types</h3>
 <div class="org-src-container">
 
-<pre  class="src src-ocaml"><span style="color: #f0e68c;">&gt;</span> <span style="color: #f5deb3; font-weight: bold;">open </span><span style="color: #8cc4ff;">System</span><span style="color: #ff4500;">;;</span>
-<span style="color: #f0e68c;">&gt;</span> <span style="color: #8cc4ff;">Console.</span><span style="color: #eeeeec; background-color: #2e3436;">ReadLine</span><span style="color: #ff4500;">;;</span>
-<span style="color: #f5deb3; font-weight: bold;">val</span> <span style="color: #fce94f;">it</span> <span style="color: #f0e68c;">:</span> unit <span style="color: #f0e68c;">-&gt;</span> string <span style="color: #f0e68c;">=</span> <span style="color: #f0e68c;">&lt;</span><span style="color: #b4fa70;">fun</span><span style="color: #f0e68c;">:</span>clo<span style="color: #f0e68c;">@</span>8<span style="color: #f0e68c;">-</span>2<span style="color: #f0e68c;">&gt;</span>
+<pre  class="src src-ocaml"><span style="color: #a52a2a;">&gt;</span> <span style="color: #000000; font-weight: bold;">open </span><span style="color: #204a87;">System</span><span style="color: #ff4500;">;;</span>
+<span style="color: #a52a2a;">&gt;</span> <span style="color: #204a87;">Console.</span><span style="color: #2e3436; background-color: #eeeeec;">ReadLine</span><span style="color: #ff4500;">;;</span>
+<span style="color: #000000; font-weight: bold;">val</span> <span style="color: #a40000;">it</span> <span style="color: #a52a2a;">:</span> unit <span style="color: #a52a2a;">-&gt;</span> string <span style="color: #a52a2a;">=</span> <span style="color: #a52a2a;">&lt;</span><span style="color: #346604;">fun</span><span style="color: #a52a2a;">:</span>clo<span style="color: #a52a2a;">@</span>8<span style="color: #a52a2a;">-</span>2<span style="color: #a52a2a;">&gt;</span>
 </pre>
 </div>
 <p>
@@ -488,7 +488,7 @@ The function <code>putStr</code> has the type
 </p>
 <div class="org-src-container">
 
-<pre  class="src src-haskell"><span style="color: #fce94f;">putStrLn</span> <span style="color: #fcaf3e;">::</span> <span style="color: #8cc4ff;">String</span> <span style="color: #fcaf3e;">-&gt;</span> <span style="color: #8cc4ff;">IO</span> <span style="color: #8cc4ff;">()</span>
+<pre  class="src src-haskell"><span style="color: #a40000;">putStrLn</span> <span style="color: #b35000;">::</span> <span style="color: #204a87;">String</span> <span style="color: #b35000;">-&gt;</span> <span style="color: #204a87;">IO</span> <span style="color: #204a87;">()</span>
 </pre>
 </div>
 
