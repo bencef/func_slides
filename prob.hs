@@ -39,7 +39,7 @@ instance Monad Prob where
   m >>= k = Prob . concat $ [ normalize xc $ unProb $ k x
                             | (x, xc) <- unProb m ]
     where
-      normalize :: Double -> [(a, Double)] -> [(a, Double)]
+      normalize :: Chance -> [(a, Chance)] -> [(a, Chance)]
       normalize factor = map (\(a, ac) -> (a, factor * ac))
 
 adventure :: Prob String
