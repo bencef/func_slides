@@ -1,23 +1,25 @@
 module Prob where
 
-type Chance = Double
+import Data.Ratio
+
+type Chance = Ratio Int
 
 -- type Prob a = [(a, Chance)]
 newtype Prob a = Prob { unProb :: [(a, Chance)]}
 
 always :: a -> Prob a
-always a = Prob [(a, 1.0)]
+always a = Prob [(a, 1)]
 
 uniform :: [a] -> Prob a
 uniform a = let scale = fromIntegral $ length a
-                chance = 1.0 / scale
+                chance = 1 % scale
             in Prob $ map (\b -> (b, chance)) a
 
 dice :: Int -> Prob Int
 dice n = uniform [1..n]
 
 chanceOf :: (a -> Bool) -> Prob a -> Chance
-chanceOf pred (Prob p) = go 0.0 p
+chanceOf pred (Prob p) = go 0 p
   where
     go acc [] = acc
     go acc (a:as) =
